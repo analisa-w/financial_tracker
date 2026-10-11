@@ -1,0 +1,44 @@
+:root {
+  --color-navy: #053a4f;
+  --color-lightblue: #6F8FAf;
+  --color-brown: #685044;
+  --color-pink: #f080a4;
+  --color-darkpink: #7b0f3b;
+  --color-black: var(--bg);
+  --color-lightgrey: #ecf3f8;
+  --color-lightyellow: #e9e38b;
+  --color-yellow: #facc4e; 
+  --color-green: #50975a;
+  --color-darkgreen: #22541d; 
+  --color-expense: #053a4f;
+  --color-income: #f080a4;
+
+}
+
+progress {
+  display: block;
+  margin-bottom: 8px;
+  width: 100%;
+  height: 20px; 
+
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transactions-card th,
+.transactions-card td {
+  text-align: left;
+  padding: 8px 16px;
+  width: 33%;
+  white-space: nowrap ;
+}
+
+.goals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+

@@ -1,0 +1,59 @@
+.title {
+    text-align: center;
+}
+.transaction-form-container {
+  width: 450px;
+}
+
+.transaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 300px;
+}
+
+.form-field label {
+  font-weight: 500;
+  font-size: 22px;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+.button-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.cancel-button, .submit-button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 18px;
+    
+}
+
+.cancel-button {
+    color: var(--color-darkpink);
+    background-color: var(--color-lightgrey);
+}
+
+.submit-button {
+    color: var(--color-darkgreen);
+    background-color: var(--color-lightgrey);
+}
