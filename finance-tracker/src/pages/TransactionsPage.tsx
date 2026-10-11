@@ -5,6 +5,11 @@ import type { Transaction } from './../components/TransactionsComponents/TableLa
 import './TransactionsPage.css'
 import TransactionFilters from './../components/TransactionsComponents/TransactionFilters'
 
+interface TransactionsPageProps {
+  transactions: Transaction[];
+  setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
+}
+
 /* transactions are going to look like this 
 {
   id: number,
@@ -18,7 +23,7 @@ import TransactionFilters from './../components/TransactionsComponents/Transacti
 */
 
 
-const initialTransactions: Transaction[] = [
+export const initialTransactions: Transaction[] = [
   {
     id: 1,
     date: '8-10-2026',
@@ -91,8 +96,9 @@ const initialTransactions: Transaction[] = [
   }
 ]
 
-export default function TransactionsPage(){
+export default function TransactionsPage({ transactions, setTransactions }: TransactionsPageProps){
   const [showForm, setShowForm] = useState(false)
+  const [editingTransactionId, setEditingTransactionId] = useState<number | null>(null)
 
   const [category, setCategory] = useState('');
   const [month, setMonth] = useState('');
@@ -101,26 +107,60 @@ export default function TransactionsPage(){
   const [sortBy, setSortBy] = useState('');
   const [sortDirection, setSortDirection] = useState('asc');
 
-  const [transactions, setTransactions] =
-    useState<Transaction[]>(initialTransactions)
-
   const toggleForm = () => {
+    if (showForm) {
+      setEditingTransactionId(null)
+    }
     setShowForm(!showForm)
   }
 
   const handleAddTransaction = (data: TransactionData) => {
+    if (editingTransactionId !== null) {
+      setTransactions(prevTransactions =>
+        prevTransactions.map(transaction =>
+          transaction.id === editingTransactionId
+            ? { ...transaction, ...data }
+            : transaction
+        )
+      )
+    } else {
+      const newTransaction: Transaction = {
+        id: Date.now(),
+        ...data
+      }
 
-    const newTransaction: Transaction = {
-      id: transactions.length + 1,
-      ...data
+      setTransactions(prevTransactions => [
+        ...prevTransactions,
+        newTransaction
+      ])
     }
 
-    setTransactions(prevTransactions => [
-      ...prevTransactions,
-      newTransaction
-    ])
-
+    setEditingTransactionId(null)
     setShowForm(false)
+  }
+
+  const handleEditTransaction = (transaction: Transaction) => {
+    setEditingTransactionId(transaction.id)
+    setShowForm(true)
+  }
+
+  const handleDeleteTransaction = (id: number) => {
+    const transactionToDelete = transactions.find(transaction => transaction.id === id)
+
+    if (!transactionToDelete) {
+      return
+    }
+
+    const itemName = transactionToDelete.title || transactionToDelete.notes || 'this transaction'
+    const confirmed = window.confirm(`Are you sure you want to delete ${itemName}?`)
+
+    if (!confirmed) {
+      return
+    }
+
+    setTransactions(prevTransactions =>
+      prevTransactions.filter(transaction => transaction.id !== id)
+    )
   }
 
   const filteredTransactions = transactions
@@ -156,12 +196,22 @@ export default function TransactionsPage(){
       <button onClick={toggleForm} 
         className = "open-button"
       >
-        Open
+        Add Transaction
       </button>
       {showForm && (
         <AddTransactionForm 
-          onSubmit={handleAddTransaction}  
-          onClose={() => setShowForm(false)}  /> )}
+          onSubmit={handleAddTransaction}
+          onClose={() => {
+            setShowForm(false)
+            setEditingTransactionId(null)
+          }}
+          initialData={
+            editingTransactionId !== null
+              ? transactions.find(transaction => transaction.id === editingTransactionId) ?? null
+              : null
+          }
+          isEditing={editingTransactionId !== null}
+        /> )}
 
       <TransactionFilters
         category={category} setCategory={setCategory}
@@ -173,7 +223,11 @@ export default function TransactionsPage(){
         onClear={handleClear}
       />
 
-      <TableLayout transactions={filteredTransactions} />
+      <TableLayout
+        transactions={filteredTransactions}
+        onEdit={handleEditTransaction}
+        onDelete={handleDeleteTransaction}
+      />
 
 
       

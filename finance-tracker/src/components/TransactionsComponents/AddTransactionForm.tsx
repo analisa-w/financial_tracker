@@ -1,5 +1,5 @@
 import './AddTransactionForm.css'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const categories = [
     {type : 'shopping'},
@@ -8,12 +8,18 @@ const categories = [
     {type : 'craft supplies'},
     {type : 'transportation'},
     {type : 'misc'},
+    {type : 'food'},
+    {type : 'groceries'},
+    {type : 'crafting!'},
+    {type : 'gift'},
 ]
 
 const cards = [
     {type : 'AMEX'},
     {type : 'Chase'},
     {type : 'Visa'},
+    {type : 'BoA'},
+    {type : 'Debit'},
 ]
 
 export interface TransactionData {
@@ -29,19 +35,46 @@ export interface TransactionData {
 interface AddTransactionFormProps {
   onClose: () => void;
   onSubmit: (data:TransactionData) => void;
+  initialData?: TransactionData | null;
+  isEditing?: boolean;
 }
 
-export default function AddTransactionForm({ onClose, onSubmit }: AddTransactionFormProps) {
+export default function AddTransactionForm({ onClose, onSubmit, initialData, isEditing = false }: AddTransactionFormProps) {
     
     
-    const [date, setDate] = useState('');
-    const [type, setType] = useState<'income' | 'expense'>('expense');
-    const [category, setCategory] = useState(categories[0].type);
-    const [title, setTitle] = useState('');
-    const [notes, setNotes] = useState('');
-    const [amount, setAmount] = useState('');
-    const [card, setCard] = useState(cards[0].type);
+    const [date, setDate] = useState(initialData?.date ?? '');
+    const [type, setType] = useState<'income' | 'expense'>(initialData?.type ?? 'expense');
+    const [category, setCategory] = useState(
+      initialData && categories.some(({ type: option }) => option === initialData.category)
+        ? initialData.category
+        : categories[0].type
+    );
+    const [title, setTitle] = useState(initialData?.title ?? '');
+    const [notes, setNotes] = useState(initialData?.notes ?? '');
+    const [amount, setAmount] = useState(initialData ? String(initialData.amount) : '');
+    const [card, setCard] = useState(
+      initialData && cards.some(({ type: option }) => option === initialData.card)
+        ? initialData.card
+        : cards[0].type
+    );
 
+    useEffect(() => {
+      setDate(initialData?.date ?? '');
+      setType(initialData?.type ?? 'expense');
+      setCategory(
+        initialData && categories.some(({ type: option }) => option === initialData.category)
+          ? initialData.category
+          : categories[0].type
+      );
+      setTitle(initialData?.title ?? '');
+      setNotes(initialData?.notes ?? '');
+      setAmount(initialData ? String(initialData.amount) : '');
+      setCard(
+        initialData && cards.some(({ type: option }) => option === initialData.card)
+          ? initialData.card
+          : cards[0].type
+      );
+    }, [initialData]);
 
     const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault(); // Prevents page reload
@@ -83,7 +116,7 @@ export default function AddTransactionForm({ onClose, onSubmit }: AddTransaction
             width: '400px',
         }} className="transaction-form-container" >
             <form onSubmit={handleSubmit} className="transaction-form">
-                <h2 className = 'title'>Add Transaction</h2>
+                <h2 className = 'title'>{isEditing ? 'Edit Transaction' : 'Add Transaction'}</h2>
 
                 <div className="form-field">
                     <label>date</label>

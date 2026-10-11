@@ -1,4 +1,3 @@
- import React, { useState } from 'react';
  import "./TransactionFilters.css"
  
 
@@ -25,6 +24,10 @@ interface TransactionFiltersProps {
     {type : 'craft supplies'},
     {type : 'transportation'},
     {type : 'misc'},
+    {type : 'food'},
+    {type : 'groceries'},
+    {type : 'crafting!'},
+    {type : 'gift'},
     ]
 
 const months = [
@@ -46,6 +49,8 @@ const cards = [
     {type : 'AMEX'},
     {type : 'Chase'},
     {type : 'Visa'},
+    {type : 'BoA'},
+    {type : 'Debit'},
 ]
 
 const types = [

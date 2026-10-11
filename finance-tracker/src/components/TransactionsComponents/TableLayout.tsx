@@ -20,10 +20,12 @@ export interface Transaction extends TransactionData {
 
 interface TableLayoutProps {
   transactions: Transaction[];
+  onEdit: (transaction: Transaction) => void;
+  onDelete: (id: number) => void;
 }
 
 
-export default function TableLayout({transactions,} : TableLayoutProps) {
+export default function TableLayout({transactions, onEdit, onDelete} : TableLayoutProps) {
   return( 
     <table className = 'table-layout striped-table'>
       <thead className = 'table-head'>
@@ -41,7 +43,7 @@ export default function TableLayout({transactions,} : TableLayoutProps) {
 
       <tbody>
         {transactions.map( (transaction, key) => (
-                    <tr key={key}>
+                    <tr key={transaction.id ?? key}>
                         <td>{transaction.id}</td>
                         <td>{transaction.date}</td>
                         <td><b>{transaction.type}</b></td>
@@ -53,11 +55,11 @@ export default function TableLayout({transactions,} : TableLayoutProps) {
                         <td>{transaction.card}</td>
                         <td>
                           <div style={{ display: 'flex', gap: '8px' }}>
-                            <button title = 'Edit' className = 'edit-btn' > 
+                            <button type="button" title = 'Edit' className = 'edit-btn' onClick={() => onEdit(transaction)}> 
                               <Pencil size={16} color = 'var(--color-navy)'/>
                             </button>
             
-                            <button title = 'Delete' className = 'delete-btn' > 
+                            <button type="button" title = 'Delete' className = 'delete-btn' onClick={() => onDelete(transaction.id)}> 
                               <Trash2 size={16} color = 'var(--color-darkpink)'/>
                             </button>
                           </div>
